@@ -1,3 +1,6 @@
+package model;
+
+import java.util.*;
 public class Matakuliah {
   
   private String nama;
@@ -17,12 +20,12 @@ public class Matakuliah {
     this.isAssigned = false;
   }
 
-  public addFasilitas(String namaFasilitas) {
-    this.fasilitas.add(new Fasilitas(namaFasilitas));
+  public void addFasilitas(String namaFasilitas) {
+    fasilitas.add(new Fasilitas(namaFasilitas));
   }
 
-  public removeFasilitas(String namaFasilitas) {
-    this.fasilitas.remove(new Fasilitas(namaFasilitas));
+  public void removeFasilitas(String namaFasilitas) {
+    fasilitas.removeIf(f -> (f.getNama() == namaFasilitas));
   }
 
   public String getNama() {
@@ -33,7 +36,7 @@ public class Matakuliah {
     this.nama = nama;
   }
 
-  public String getKapasitas() {
+  public int getKapasitas() {
     return kapasitas;
   }
 
@@ -41,7 +44,7 @@ public class Matakuliah {
     this.kapasitas = kapasitas;
   }
 
-  public String getFasilitas() {
+  public Set<Fasilitas> getFasilitas() {
     return fasilitas;
   }
 

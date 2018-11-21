@@ -1,3 +1,7 @@
+package model;
+
+import java.util.*;
+
 public class Ruangan {
   
   private String nama;
@@ -7,22 +11,22 @@ public class Ruangan {
 
   public Ruangan() {
     fasilitas = new HashSet<>();
-    this.isEmpty = true;
+    isEmpty = true;
   }
 
   public Ruangan(String nama, int kapasitas, Set<Fasilitas> fasilitas) {
     this.nama = nama;
     this.kapasitas = kapasitas;
     this.fasilitas = fasilitas;
-    this.isEmpty = true;
+    isEmpty = true;
   }
 
-  public addFasilitas(String namaFasilitas) {
-    this.fasilitas.add(new Fasilitas(namaFasilitas));
+  public void addFasilitas(String namaFasilitas) {
+    fasilitas.add(new Fasilitas(namaFasilitas));
   }
 
-  public removeFasilitas(String namaFasilitas) {
-    this.fasilitas.remove(new Fasilitas(namaFasilitas));
+  public void removeFasilitas(String namaFasilitas) {
+    fasilitas.removeIf(f -> (f.getNama() == namaFasilitas));
   }
 
   public String getNama() {
@@ -33,7 +37,7 @@ public class Ruangan {
     this.nama = nama;
   }
 
-  public String getKapasitas() {
+  public int getKapasitas() {
     return kapasitas;
   }
 
@@ -41,7 +45,7 @@ public class Ruangan {
     this.kapasitas = kapasitas;
   }
 
-  public String getFasilitas() {
+  public Set<Fasilitas> getFasilitas() {
     return fasilitas;
   }
 
