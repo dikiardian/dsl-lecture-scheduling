@@ -1,6 +1,7 @@
 // Generated from antlrfiles/Schedule.g4 by ANTLR 4.7.1
 package antlrfiles;
 
+import utils.CustomParser;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
@@ -16,17 +17,39 @@ public class ScheduleBaseListener implements ScheduleListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterSchedule(ScheduleParser.ScheduleContext ctx) { }
+	@Override public void enterModel(ScheduleParser.ModelContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitSchedule(ScheduleParser.ScheduleContext ctx) {
-		System.out.println(ctx.OPERATOR().getText());
-		System.out.println(ctx.OPERAND(0).getText());
-		System.out.println(ctx.OPERAND(1).getText());
+	@Override public void exitModel(ScheduleParser.ModelContext ctx) {
+		CustomParser.parseModel(ctx);
 	}
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterAssign(ScheduleParser.AssignContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitAssign(ScheduleParser.AssignContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterEnd(ScheduleParser.EndContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitEnd(ScheduleParser.EndContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

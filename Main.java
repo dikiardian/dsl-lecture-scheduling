@@ -15,7 +15,9 @@ class Main {
             CommonTokenStream tokens = new CommonTokenStream(lexer);
             ScheduleParser parser = new ScheduleParser(tokens); 
             parser.addParseListener(new ScheduleBaseListener());
-            parser.schedule();
+            parser.model();
+            // parser.assign();
+            // parser.end();
         }
     }
 }
