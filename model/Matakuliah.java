@@ -7,6 +7,7 @@ public class Matakuliah {
   private int kapasitas;
   private Set<Fasilitas> fasilitas;
   private int sks;
+  private int allocated;
   private int tingkat;
   private boolean isAssigned;
 
@@ -22,6 +23,7 @@ public class Matakuliah {
     this.sks = sks;
     this.tingkat = tingkat;
     this.isAssigned = false;
+    this.allocated = 0;
   }
 
   public void addFasilitas(String namaFasilitas) {
@@ -30,6 +32,10 @@ public class Matakuliah {
 
   public void removeFasilitas(String namaFasilitas) {
     fasilitas.removeIf(f -> (f.getNama() == namaFasilitas));
+  }
+
+  public int alllocableHours() {
+    return sks - allocated;
   }
 
   public String getNama() {
@@ -78,5 +84,13 @@ public class Matakuliah {
 
   public void setTingkat(int tingkat) {
     this.tingkat = tingkat;
+  }
+
+  public int getAllocated() {
+    return allocated;
+  }
+
+  public void setAllocated(int allocated) {
+    this.allocated = allocated;
   }
 }

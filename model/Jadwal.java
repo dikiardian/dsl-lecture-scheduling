@@ -34,27 +34,36 @@ public class Jadwal {
     String namaRuangan,
     String namaDosen,
     int hari,
-    int jam) {
+    int jam,
+    int durasi) {
 
-    Set<String> errors = getError(namaMatakuliah, namaRuangan, namaDosen, hari, jam);
+    Set<String> errors = getError(namaMatakuliah, namaRuangan, namaDosen, hari, jam, durasi);
     if (errors.size() == 0) {
       Matakuliah matakuliah = this.matakuliah.get(namaMatakuliah);
       Dosen dosen = this.dosen.get(namaDosen);
       Ruangan ruangan = this.ruangan.get(namaRuangan);
-      Map<String, JadwalAssignment> jadwal = jadwalAssignment.get(hari-1).get(jam-1);
-      if (jadwal.get(namaRuangan) == null) {
-        JadwalAssignment jadwalBaru = new JadwalAssignment(matakuliah, ruangan, dosen);
-        jadwal.put(namaRuangan, jadwalBaru);
-      } else {
-        jadwal.get(namaRuangan).setJadwal(matakuliah, dosen, ruangan);
-        jadwal.get(namaRuangan).setIsSet(true);
+      for (int d=0; d<durasi; d++) {
+        Map<String, JadwalAssignment> jadwal = jadwalAssignment.get(hari-1).get(jam-1+d);
+        if (jadwal.get(namaRuangan) == null) {
+          JadwalAssignment jadwalBaru = new JadwalAssignment(matakuliah, ruangan, dosen);
+          jadwal.put(namaRuangan, jadwalBaru);
+        } else {
+          jadwal.get(namaRuangan).setJadwal(matakuliah, dosen, ruangan);
+          jadwal.get(namaRuangan).setIsSet(true);
+        }
+        matakuliah.setAllocated(matakuliah.getAllocated()+1);
       }
-
+      System.out.println("Berhasil!");
     } else {
       // got some errors
-      System.out.print(errors);
+      System.out.println(errors);
     }
+  }
 
+  public void unassignFrom(String namaRuangan, int hari, int jam, int durasi) {
+    for (int d=0; d<durasi; d++) {
+      jadwalAssignment.get(hari-1).get(jam-1+d).remove(namaRuangan);
+    }
   }
 
   private Set<String> getError(
@@ -62,12 +71,13 @@ public class Jadwal {
     String namaRuangan,
     String namaDosen,
     int hari,
-    int jam) {
+    int jam,
+    int durasi) {
       Set<String> error = new HashSet<>();
       Map<String, JadwalAssignment> jadwal = jadwalAssignment.get(hari-1).get(jam-1);
 
       // cek valid waktu
-      if (hari > 6 && jam > 12) {
+      if (hari > 5 && jam > 11) {
         error.add("invalidTime");
       }
       // cek namaMatakuliah
@@ -82,12 +92,29 @@ public class Jadwal {
       if (!dosen.containsKey(namaDosen)) {
         error.add("namaDosen");
       }
-      // cek apakah sudah terset
-      if (jadwal.get(namaRuangan) != null) {
-        if (jadwal.get(namaRuangan).getIsSet()) {
-          error.add("availability");
-        }
+      // cek allocable hour matakuliah terkait
+      if (matakuliah.get(namaMatakuliah).alllocableHours() < durasi) {
+        error.add("allocated");
       }
+      // cek apakah tersedia jadwal sebanyak durasi
+      boolean isAvailable = true;
+      if (12-jam >= durasi) {
+        for (int d=0; d<durasi; d++) {
+          Map<String, JadwalAssignment> currJadwal = jadwalAssignment.get(hari-1).get(jam-1+d);
+          if (currJadwal.get(namaRuangan) != null) {
+            if (currJadwal.get(namaRuangan).getIsSet()) {
+              isAvailable = false;
+              break;
+            }
+          }    
+        }
+      } else {
+        isAvailable = false;
+      }
+      if (!isAvailable) {
+        error.add("availability");
+      }
+
       // cek kapasitas
       if (ruangan.get(namaRuangan).getKapasitas() < matakuliah.get(namaMatakuliah).getKapasitas()) {
         error.add("capacity");
@@ -110,7 +137,7 @@ public class Jadwal {
       // cek matkul dg tingkat yg sama
       boolean foundTingkat = false;
       for (JadwalAssignment j : jadwal.values()) {
-        if (j.getMatakuliah().getTingkat() == matakuliah.get(namaRuangan).getTingkat()) {
+        if (j.getMatakuliah().getTingkat() == matakuliah.get(namaMatakuliah).getTingkat()) {
           foundTingkat = true;
           break;
         }
@@ -167,7 +194,7 @@ public class Jadwal {
   public void showMatakuliah() {
     StringBuilder result = new StringBuilder();
     for (Matakuliah m : matakuliah.values()) {
-      result.append(m.getNama() + " " + m.getKapasitas() + " " + m.getFasilitas() +"\n");
+      result.append(m.getNama() + " " + m.getKapasitas() + " " + m.getFasilitas() + " " + m.getAllocated() +"\n");
     }
     System.out.print(result);
   }
