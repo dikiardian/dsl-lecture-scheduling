@@ -1,6 +1,7 @@
 package model;
 
 import java.util.*;
+import com.bethecoder.ascii_table.*;
 public class Jadwal {
   
   private String nama;
@@ -152,27 +153,43 @@ public class Jadwal {
   // show methods
 
   public void showJadwal() {
-    StringBuilder result = new StringBuilder();
-    int hari = 1;
-    for (List<Map<String, JadwalAssignment>> j : jadwalAssignment) {
-      result.append("Hari ke-" + hari + "\n");
-      int jam = 1;
-      for (Map<String, JadwalAssignment> jj : j) {
-        result.append(jam + "   ");
-        for (String namaRuangan : ruangan.keySet()) {
-          JadwalAssignment jadwal = jj.get(namaRuangan);
-          if (jadwal != null) {
-            result.append(namaRuangan + ": " + jadwal.getMatakuliah().getNama() + "; ");
+    ASCIITableHeader[] headerTable = {
+      new ASCIITableHeader("Jam"),
+      new ASCIITableHeader("SENIN", ASCIITable.ALIGN_CENTER),
+      new ASCIITableHeader("SELASA", ASCIITable.ALIGN_CENTER),
+      new ASCIITableHeader("RABU", ASCIITable.ALIGN_CENTER),
+      new ASCIITableHeader("KAMIS", ASCIITable.ALIGN_CENTER),
+      new ASCIITableHeader("JUMAT", ASCIITable.ALIGN_CENTER),
+    };
+    for (String namaRuangan : ruangan.keySet()) {
+      List<List<String>> printData = new ArrayList<>();
+      System.out.println("Ruang: " + namaRuangan);
+      int jam = 7;
+      for (int j=0; j<11; j++) {
+        List<String> data = new ArrayList<>();
+        if (jam < 10) {
+          data.add("0" + jam + ".00");
+        } else {
+          data.add(jam + ".00");
+        }
+        for (int h=0; h<5; h++) {
+          Map<String, JadwalAssignment> jadwal = jadwalAssignment.get(h).get(j);
+          if (jadwal.get(namaRuangan) != null) {
+            data.add(jadwal.get(namaRuangan).getMatakuliah().getNama());
           } else {
-            result.append(namaRuangan + ": - ; ");
+            data.add("-");
           }
         }
-        result.append("\n");
         jam += 1;
+        printData.add(data);
       }
-      hari += 1;
+      String[][] printDataAsArray = new String[printData.size()][];
+      for (int i = 0; i < printData.size(); i++) {
+        List<String> row = printData.get(i);
+        printDataAsArray[i] = row.toArray(new String[row.size()]);
+      }
+      ASCIITable.getInstance().printTable(headerTable, printDataAsArray);
     }
-    System.out.print(result);
   }
 
   public void showDosen() {
