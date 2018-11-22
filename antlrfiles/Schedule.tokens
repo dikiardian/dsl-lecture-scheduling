@@ -1,3 +1,10 @@
-OPERATOR=1
-OPERAND=2
-WHITESPACE=3
+BasicOperator=1
+AssignmentOperator=2
+OtherOperator=3
+Kind=4
+Name=5
+Facility=6
+Capacity=7
+Day=8
+Time=9
+WhiteSpace=10

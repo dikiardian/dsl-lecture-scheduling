@@ -276,13 +276,18 @@ public class Jadwal {
     printTable(headerTable, printData);
   }
 
-  // Add/remove data
+  // Add/remove/update data
 
   public void addDosen(String namaDosen) {
     dosen.put(namaDosen, new Dosen(namaDosen));
   }
 
+  public void updateDosen(String namaDosen, String newNamaDosen) {
+    //TODO: cek lagi
+  }
+
   public void removeDosen(String namaDosen) {
+    //TODO: cek lagi
     dosen.remove(namaDosen);
   }
 
@@ -290,7 +295,12 @@ public class Jadwal {
     fasilitas.put(namaFasilitas, new Fasilitas(namaFasilitas));
   }
 
+  public void updateFasilitas(String namaFasilitas, String newNamaFasilitas) {
+    //TODO: cek lagi
+  }
+
   public void removeFasilitas(String namaFasilitas) {
+    //TODO: cek lagi
     fasilitas.remove(namaFasilitas);
   }
 
@@ -312,7 +322,12 @@ public class Jadwal {
     }
   }
 
+  public void updateMatakuliah(String namaMatakuliah, int kapasitas, Set<Fasilitas> fasilitas, int sks, int tingkat) {
+    //TODO: cek lagi
+  }
+
   public void removeMatakuliah(String namaMatakuliah) {
+    //TODO: cek lagi
     matakuliah.remove(namaMatakuliah);
   }
 
@@ -334,7 +349,12 @@ public class Jadwal {
     }
   }
 
+  public void updateRuangan(String namaRuangan, int kapasitas, Set<Fasilitas> fasilitas) {
+    //TODO: cek lagi
+  }
+
   public void removeRuangan(String namaRuangan) {
+    //TODO: cek lagi
     ruangan.remove(namaRuangan);
   }
 

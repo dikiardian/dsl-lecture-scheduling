@@ -13,7 +13,7 @@ public class Test {
     // TEST FASILITAS
     jadwal.addFasilitas("Meja");
     jadwal.addFasilitas("Papan tulis");
-    jadwal.removeFasilitas("Meja");
+    // jadwal.removeFasilitas("Meja");
 
     // TEST MATAKULIAH
     Fasilitas fasilitas1 = new Fasilitas("Meja");

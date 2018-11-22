@@ -18,7 +18,7 @@ public class ScheduleParser extends Parser {
 		new PredictionContextCache();
 	public static final int
 		BasicOperator=1, AssignmentOperator=2, OtherOperator=3, Kind=4, Name=5, 
-		Facility=6, Capacity=7, Time=8, WhiteSpace=9;
+		Facility=6, Capacity=7, Day=8, Time=9, WhiteSpace=10;
 	public static final int
 		RULE_model = 0, RULE_assign = 1, RULE_end = 2;
 	public static final String[] ruleNames = {
@@ -29,7 +29,7 @@ public class ScheduleParser extends Parser {
 	};
 	private static final String[] _SYMBOLIC_NAMES = {
 		null, "BasicOperator", "AssignmentOperator", "OtherOperator", "Kind", 
-		"Name", "Facility", "Capacity", "Time", "WhiteSpace"
+		"Name", "Facility", "Capacity", "Day", "Time", "WhiteSpace"
 	};
 	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
 
@@ -120,45 +120,45 @@ public class ScheduleParser extends Parser {
 			match(BasicOperator);
 			setState(7);
 			match(Kind);
-			setState(9); 
+			setState(11);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			do {
+			while (_la==Name) {
 				{
 				{
 				setState(8);
 				match(Name);
 				}
 				}
-				setState(11); 
+				setState(13);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-			} while ( _la==Name );
-			setState(16);
+			}
+			setState(17);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==Capacity) {
 				{
 				{
-				setState(13);
+				setState(14);
 				match(Capacity);
 				}
 				}
-				setState(18);
+				setState(19);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
-			setState(22);
+			setState(23);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==Facility) {
 				{
 				{
-				setState(19);
+				setState(20);
 				match(Facility);
 				}
 				}
-				setState(24);
+				setState(25);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -177,6 +177,7 @@ public class ScheduleParser extends Parser {
 
 	public static class AssignContext extends ParserRuleContext {
 		public TerminalNode AssignmentOperator() { return getToken(ScheduleParser.AssignmentOperator, 0); }
+		public TerminalNode Day() { return getToken(ScheduleParser.Day, 0); }
 		public TerminalNode Time() { return getToken(ScheduleParser.Time, 0); }
 		public List<TerminalNode> Name() { return getTokens(ScheduleParser.Name); }
 		public TerminalNode Name(int i) {
@@ -203,23 +204,25 @@ public class ScheduleParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(25);
+			setState(26);
 			match(AssignmentOperator);
-			setState(27); 
+			setState(28); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
 				{
 				{
-				setState(26);
+				setState(27);
 				match(Name);
 				}
 				}
-				setState(29); 
+				setState(30); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( _la==Name );
-			setState(31);
+			setState(32);
+			match(Day);
+			setState(33);
 			match(Time);
 			}
 		}
@@ -256,7 +259,7 @@ public class ScheduleParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(33);
+			setState(35);
 			match(OtherOperator);
 			}
 		}
@@ -272,17 +275,17 @@ public class ScheduleParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\13&\4\2\t\2\4\3\t"+
-		"\3\4\4\t\4\3\2\3\2\3\2\6\2\f\n\2\r\2\16\2\r\3\2\7\2\21\n\2\f\2\16\2\24"+
-		"\13\2\3\2\7\2\27\n\2\f\2\16\2\32\13\2\3\3\3\3\6\3\36\n\3\r\3\16\3\37\3"+
-		"\3\3\3\3\4\3\4\3\4\2\2\5\2\4\6\2\2\2&\2\b\3\2\2\2\4\33\3\2\2\2\6#\3\2"+
-		"\2\2\b\t\7\3\2\2\t\13\7\6\2\2\n\f\7\7\2\2\13\n\3\2\2\2\f\r\3\2\2\2\r\13"+
-		"\3\2\2\2\r\16\3\2\2\2\16\22\3\2\2\2\17\21\7\t\2\2\20\17\3\2\2\2\21\24"+
-		"\3\2\2\2\22\20\3\2\2\2\22\23\3\2\2\2\23\30\3\2\2\2\24\22\3\2\2\2\25\27"+
-		"\7\b\2\2\26\25\3\2\2\2\27\32\3\2\2\2\30\26\3\2\2\2\30\31\3\2\2\2\31\3"+
-		"\3\2\2\2\32\30\3\2\2\2\33\35\7\4\2\2\34\36\7\7\2\2\35\34\3\2\2\2\36\37"+
-		"\3\2\2\2\37\35\3\2\2\2\37 \3\2\2\2 !\3\2\2\2!\"\7\n\2\2\"\5\3\2\2\2#$"+
-		"\7\5\2\2$\7\3\2\2\2\6\r\22\30\37";
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\f(\4\2\t\2\4\3\t"+
+		"\3\4\4\t\4\3\2\3\2\3\2\7\2\f\n\2\f\2\16\2\17\13\2\3\2\7\2\22\n\2\f\2\16"+
+		"\2\25\13\2\3\2\7\2\30\n\2\f\2\16\2\33\13\2\3\3\3\3\6\3\37\n\3\r\3\16\3"+
+		" \3\3\3\3\3\3\3\4\3\4\3\4\2\2\5\2\4\6\2\2\2(\2\b\3\2\2\2\4\34\3\2\2\2"+
+		"\6%\3\2\2\2\b\t\7\3\2\2\t\r\7\6\2\2\n\f\7\7\2\2\13\n\3\2\2\2\f\17\3\2"+
+		"\2\2\r\13\3\2\2\2\r\16\3\2\2\2\16\23\3\2\2\2\17\r\3\2\2\2\20\22\7\t\2"+
+		"\2\21\20\3\2\2\2\22\25\3\2\2\2\23\21\3\2\2\2\23\24\3\2\2\2\24\31\3\2\2"+
+		"\2\25\23\3\2\2\2\26\30\7\b\2\2\27\26\3\2\2\2\30\33\3\2\2\2\31\27\3\2\2"+
+		"\2\31\32\3\2\2\2\32\3\3\2\2\2\33\31\3\2\2\2\34\36\7\4\2\2\35\37\7\7\2"+
+		"\2\36\35\3\2\2\2\37 \3\2\2\2 \36\3\2\2\2 !\3\2\2\2!\"\3\2\2\2\"#\7\n\2"+
+		"\2#$\7\13\2\2$\5\3\2\2\2%&\7\5\2\2&\7\3\2\2\2\6\r\23\31 ";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

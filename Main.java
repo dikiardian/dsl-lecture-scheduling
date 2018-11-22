@@ -3,10 +3,13 @@ import java.util.*;
 import java.nio.charset.*;
 import org.antlr.v4.runtime.*;
 import antlrfiles.*;
+import model.*;
+import utils.*;
 
 class Main {
     public static void main(String[] args) throws IOException {
         Scanner scanner = new Scanner(System.in);
+        CustomParser.jadwal = new Jadwal("Jadwalku");
         while(true) {
             String query = scanner.nextLine();
             InputStream stream = new ByteArrayInputStream(query.getBytes(StandardCharsets.UTF_8));
