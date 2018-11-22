@@ -94,7 +94,7 @@ public class Jadwal {
         error.add("namaDosen");
       }
       // cek allocable hour matakuliah terkait
-      if (matakuliah.get(namaMatakuliah).alllocableHours() < durasi) {
+      if (matakuliah.get(namaMatakuliah).allocableHours() < durasi) {
         error.add("allocated");
       }
       // cek apakah tersedia jadwal sebanyak durasi
@@ -151,6 +151,16 @@ public class Jadwal {
   }
 
   // show methods
+  private void printTable(ASCIITableHeader[] headerTable, List<List<String>> printData) {
+    // convert list to array
+    String[][] printDataAsArray = new String[printData.size()][];
+    for (int i = 0; i < printData.size(); i++) {
+      List<String> row = printData.get(i);
+      printDataAsArray[i] = row.toArray(new String[row.size()]);
+    }
+    // print
+    ASCIITable.getInstance().printTable(headerTable, printDataAsArray);
+  }
 
   public void showJadwal() {
     ASCIITableHeader[] headerTable = {
@@ -183,29 +193,34 @@ public class Jadwal {
         jam += 1;
         printData.add(data);
       }
-      String[][] printDataAsArray = new String[printData.size()][];
-      for (int i = 0; i < printData.size(); i++) {
-        List<String> row = printData.get(i);
-        printDataAsArray[i] = row.toArray(new String[row.size()]);
-      }
-      ASCIITable.getInstance().printTable(headerTable, printDataAsArray);
+      printTable(headerTable, printData);
     }
   }
 
   public void showDosen() {
-    StringBuilder result = new StringBuilder();
+    ASCIITableHeader[] headerTable = {
+      new ASCIITableHeader("Nama Dosen", ASCIITable.ALIGN_CENTER),
+    };
+    List<List<String>> printData = new ArrayList<>();
     for (Dosen d : dosen.values()) {
-      result.append(d.getNama() + "\n");
+      List<String> data = new ArrayList<>();
+      data.add(d.getNama());
+      printData.add(data);
     }
-    System.out.print(result);
+    printTable(headerTable, printData);
   }
 
   public void showFasilitas() {
-    StringBuilder result = new StringBuilder();
+    ASCIITableHeader[] headerTable = {
+      new ASCIITableHeader("Fasilitas", ASCIITable.ALIGN_CENTER),
+    };
+    List<List<String>> printData = new ArrayList<>();
     for (Fasilitas f : fasilitas.values()) {
-      result.append(f.getNama() + "\n");
+      List<String> data = new ArrayList<>();
+      data.add(f.getNama());
+      printData.add(data);
     }
-    System.out.print(result);
+    printTable(headerTable, printData);
   }
 
   public void showMatakuliah() {
@@ -243,7 +258,13 @@ public class Jadwal {
   }
 
   public void addMatakuliah(String namaMatakuliah, int kapasitas, Set<Fasilitas> fasilitas, int sks, int tingkat) {
-    matakuliah.put(namaMatakuliah, new Matakuliah(namaMatakuliah, kapasitas, fasilitas, sks, tingkat));
+    if (this.fasilitas.values().containsAll(fasilitas)) {
+      matakuliah.put(namaMatakuliah, new Matakuliah(namaMatakuliah, kapasitas, fasilitas, sks, tingkat));
+    } else {
+      List<Fasilitas> diff = new ArrayList<>(fasilitas);
+      diff.removeAll(this.fasilitas.values());
+      System.out.println("[ERROR] Fasilitas "+ diff + " belum ditambahkan.");
+    }
   }
 
   public void removeMatakuliah(String namaMatakuliah) {
@@ -251,7 +272,13 @@ public class Jadwal {
   }
 
   public void addRuangan(String namaRuangan, int kapasitas, Set<Fasilitas> fasilitas) {
-    ruangan.put(namaRuangan, new Ruangan(namaRuangan, kapasitas, fasilitas));
+    if (this.fasilitas.values().containsAll(fasilitas)) {
+      ruangan.put(namaRuangan, new Ruangan(namaRuangan, kapasitas, fasilitas));
+    } else {
+      List<Fasilitas> diff = new ArrayList<>(fasilitas);
+      diff.removeAll(this.fasilitas.values());
+      System.out.println("[ERROR] Fasilitas "+ diff + " belum ditambahkan.");
+    }
   }
 
   public void removeRuangan(String namaRuangan) {

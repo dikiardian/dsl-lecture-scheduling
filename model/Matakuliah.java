@@ -34,7 +34,7 @@ public class Matakuliah {
     fasilitas.removeIf(f -> (f.getNama() == namaFasilitas));
   }
 
-  public int alllocableHours() {
+  public int allocableHours() {
     return sks - allocated;
   }
 
