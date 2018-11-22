@@ -224,22 +224,59 @@ public class Jadwal {
   }
 
   public void showMatakuliah() {
-    StringBuilder result = new StringBuilder();
+    ASCIITableHeader[] headerTable = {
+      new ASCIITableHeader("Nama Matakuliah", ASCIITable.ALIGN_CENTER),
+      new ASCIITableHeader("Kapasitas", ASCIITable.ALIGN_CENTER),
+      new ASCIITableHeader("Fasilitas", ASCIITable.ALIGN_CENTER),
+      new ASCIITableHeader("Jumlah sks", ASCIITable.ALIGN_CENTER),
+      new ASCIITableHeader("Telah terjadwal (jam)", ASCIITable.ALIGN_CENTER),
+    };
+    List<List<String>> printData = new ArrayList<>();
     for (Matakuliah m : matakuliah.values()) {
-      result.append(m.getNama() + " " + m.getKapasitas() + " " + m.getFasilitas() + " " + m.getAllocated() +"\n");
+      List<String> data = new ArrayList<>();
+      data.add(m.getNama());
+      data.add(Integer.toString(m.getKapasitas()));
+
+      Set<Fasilitas> fasilitasMatakuliah = m.getFasilitas();
+      StringBuilder fasilitasAsString = new StringBuilder();
+      for (Fasilitas f : fasilitasMatakuliah) {
+        fasilitasAsString.append(f.getNama() + ", ");
+      }
+      fasilitasAsString.delete(fasilitasAsString.length()-2, fasilitasAsString.length()-1);
+      data.add(fasilitasAsString.toString());
+
+      data.add(Integer.toString(m.getSks()));
+      data.add(Integer.toString(m.getAllocated()));
+      printData.add(data);
     }
-    System.out.print(result);
+    printTable(headerTable, printData);
   }
 
   public void showRuangan() {
-    StringBuilder result = new StringBuilder();
+    ASCIITableHeader[] headerTable = {
+      new ASCIITableHeader("Nama Ruangan", ASCIITable.ALIGN_CENTER),
+      new ASCIITableHeader("Kapasitas", ASCIITable.ALIGN_CENTER),
+      new ASCIITableHeader("Fasilitas", ASCIITable.ALIGN_CENTER)
+    };
+    List<List<String>> printData = new ArrayList<>();
     for (Ruangan r : ruangan.values()) {
-      result.append(r.getNama() + " " + r.getKapasitas() + " " + r.getFasilitas() +"\n");
+      List<String> data = new ArrayList<>();
+      data.add(r.getNama());
+      data.add(Integer.toString(r.getKapasitas()));
+
+      Set<Fasilitas> fasilitasMatakuliah = r.getFasilitas();
+      StringBuilder fasilitasAsString = new StringBuilder();
+      for (Fasilitas f : fasilitasMatakuliah) {
+        fasilitasAsString.append(f.getNama() + ", ");
+      }
+      fasilitasAsString.delete(fasilitasAsString.length()-2, fasilitasAsString.length()-1);
+      data.add(fasilitasAsString.toString());
+      printData.add(data);
     }
-    System.out.print(result);
+    printTable(headerTable, printData);
   }
 
-  // Set manipulations
+  // Add/remove data
 
   public void addDosen(String namaDosen) {
     dosen.put(namaDosen, new Dosen(namaDosen));
@@ -258,11 +295,19 @@ public class Jadwal {
   }
 
   public void addMatakuliah(String namaMatakuliah, int kapasitas, Set<Fasilitas> fasilitas, int sks, int tingkat) {
-    if (this.fasilitas.values().containsAll(fasilitas)) {
+    Set<String> fasilitasJadwal = new HashSet<>();
+    for (Fasilitas f: this.fasilitas.values()) {
+      fasilitasJadwal.add(f.getNama());
+    }
+    Set<String> fasilitasMatakuliah = new HashSet<>();
+    for (Fasilitas f: fasilitas) {
+      fasilitasMatakuliah.add(f.getNama());
+    }
+    if (fasilitasJadwal.containsAll(fasilitasMatakuliah)) {
       matakuliah.put(namaMatakuliah, new Matakuliah(namaMatakuliah, kapasitas, fasilitas, sks, tingkat));
     } else {
-      List<Fasilitas> diff = new ArrayList<>(fasilitas);
-      diff.removeAll(this.fasilitas.values());
+      Set<String> diff = new HashSet<>(fasilitasMatakuliah);
+      diff.removeAll(fasilitasJadwal);
       System.out.println("[ERROR] Fasilitas "+ diff + " belum ditambahkan.");
     }
   }
@@ -272,11 +317,19 @@ public class Jadwal {
   }
 
   public void addRuangan(String namaRuangan, int kapasitas, Set<Fasilitas> fasilitas) {
-    if (this.fasilitas.values().containsAll(fasilitas)) {
+    Set<String> fasilitasJadwal = new HashSet<>();
+    for (Fasilitas f: this.fasilitas.values()) {
+      fasilitasJadwal.add(f.getNama());
+    }
+    Set<String> fasilitasRuangan = new HashSet<>();
+    for (Fasilitas f: fasilitas) {
+      fasilitasRuangan.add(f.getNama());
+    }
+    if (fasilitasJadwal.containsAll(fasilitasRuangan)) {
       ruangan.put(namaRuangan, new Ruangan(namaRuangan, kapasitas, fasilitas));
     } else {
-      List<Fasilitas> diff = new ArrayList<>(fasilitas);
-      diff.removeAll(this.fasilitas.values());
+      Set<String> diff = new HashSet<>(fasilitasRuangan);
+      diff.removeAll(fasilitasJadwal);
       System.out.println("[ERROR] Fasilitas "+ diff + " belum ditambahkan.");
     }
   }

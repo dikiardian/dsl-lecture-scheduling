@@ -11,9 +11,9 @@ public class Test {
     jadwal.addDosen("John");
     
     // TEST FASILITAS
-    jadwal.addFasilitas("Papan tulis");
     jadwal.addFasilitas("Meja");
-    // jadwal.removeFasilitas("Meja");
+    jadwal.addFasilitas("Papan tulis");
+    jadwal.removeFasilitas("Meja");
 
     // TEST MATAKULIAH
     Fasilitas fasilitas1 = new Fasilitas("Meja");
@@ -40,14 +40,13 @@ public class Test {
     jadwal.unassignFrom("7602", 1, 9, 3);
     // jadwal.assignTo("IF4071", "7605", "John", 1, 1);
     
-    // TEST SHOW
-    // jadwal.showDosen();
-    // jadwal.showFasilitas();
-    // jadwal.showMatakuliah();
+    // TEST SHOW;
 
     jadwal.showJadwal();
     jadwal.showDosen();
     jadwal.showFasilitas();
+    jadwal.showMatakuliah();
+    jadwal.showRuangan();
 
     // ASCIITableHeader[] headerObjs = {
       // new ASCIITableHeader("User Name", ASCIITable.ALIGN_LEFT),
