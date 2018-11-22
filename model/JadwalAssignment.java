@@ -5,19 +5,22 @@ public class JadwalAssignment {
   private Matakuliah matakuliah;
   private Ruangan ruangan;
   private Dosen dosen;
-  private int hari;
-  private int jam;
+  private boolean isSet;
 
   public JadwalAssignment() {
-    
+    isSet = false;
   }
 
-  public JadwalAssignment(Matakuliah matakuliah, Ruangan ruangan, Dosen dosen, int hari, int jam) {
+  public JadwalAssignment(Matakuliah matakuliah, Ruangan ruangan, Dosen dosen) {
     this.matakuliah = matakuliah;
     this.ruangan = ruangan;
     this.dosen = dosen;
-    this.hari = hari;
-    this.jam = jam;
+    isSet = true;
+  }
+
+  @Override
+  public String toString() {
+    return matakuliah.getNama() + ' ' + ruangan.getNama() + ' ' + dosen.getNama();
   }
 
   public Matakuliah getMatakuliah() {
@@ -32,12 +35,29 @@ public class JadwalAssignment {
     return dosen;
   }
 
-  public int getHari() {
-    return hari;
+  public boolean getIsSet() {
+    return isSet;
   }
 
-  public int getJam() {
-    return jam;
+  public void setMatakuliah(Matakuliah matakuliah) {
+    this.matakuliah = matakuliah;
   }
 
+  public void setDosen(Dosen dosen) {
+    this.dosen = dosen;
+  }
+
+  public void setRuangan(Ruangan ruangan) {
+    this.ruangan = ruangan;
+  }
+
+  public void setIsSet(boolean isSet) {
+    this.isSet = isSet;
+  }
+
+  public void setJadwal(Matakuliah matakuliah, Dosen dosen, Ruangan ruangan) {
+    this.matakuliah = matakuliah;
+    this.dosen = dosen;
+    this.ruangan = ruangan;
+  }
 }

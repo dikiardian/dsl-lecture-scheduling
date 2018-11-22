@@ -4,40 +4,153 @@ import java.util.*;
 public class Jadwal {
   
   private String nama;
-  private Set<Dosen> dosen;
-  private Set<Fasilitas> fasilitas;
-  private Set<Matakuliah> matakuliah;
-  private Set<Ruangan> ruangan;
-  private Set<JadwalAssignment> jadwalAssignment;
-  public List<List<Integer>> waktu;
+  private Map<String, Dosen> dosen; // namaDosen : dosen
+  private Map<String, Fasilitas> fasilitas;  // namaFasilitas : fasilitas
+  private Map<String, Matakuliah> matakuliah; // namaMatakuliah : matakuliah
+  private Map<String, Ruangan> ruangan; // namaRuangan : ruangan
+  public List<List<Map<String, JadwalAssignment>>> jadwalAssignment; // [hari][jam][namaRuangan : jadwal]
 
   public Jadwal(String nama) {
     this.nama = nama;
-    dosen = new HashSet<>();
-    fasilitas = new HashSet<>();
-    matakuliah = new HashSet<>();
-    ruangan = new HashSet<>();
-    jadwalAssignment = new HashSet<>();
+    dosen = new HashMap<>();
+    fasilitas = new HashMap<>();
+    matakuliah = new HashMap<>();
+    ruangan = new HashMap<>();
 
-    waktu = new ArrayList<>();
-    for (int i = 1; i <= 5; i++) {
-      List<Integer> jam = new ArrayList<>();
-      for (int j = 1; j <= 11; j++) {
-        jam.add(j);
+    jadwalAssignment = new ArrayList<>(5);
+    for (int i=0; i<5; i++) {
+      List<Map<String, JadwalAssignment>> jam = new ArrayList<>(11);
+      for (int j=0; j<11; j++) {
+        Map<String, JadwalAssignment> jadwal = new HashMap<>();
+        jam.add(jadwal);
       }
-      waktu.add(jam);
+      jadwalAssignment.add(jam);
     }
+  }
+
+  // Assignment
+  public void assignTo(
+    String namaMatakuliah,
+    String namaRuangan,
+    String namaDosen,
+    int hari,
+    int jam) {
+
+    Set<String> errors = getError(namaMatakuliah, namaRuangan, namaDosen, hari, jam);
+    if (errors.size() == 0) {
+      Matakuliah matakuliah = this.matakuliah.get(namaMatakuliah);
+      Dosen dosen = this.dosen.get(namaDosen);
+      Ruangan ruangan = this.ruangan.get(namaRuangan);
+      Map<String, JadwalAssignment> jadwal = jadwalAssignment.get(hari-1).get(jam-1);
+      if (jadwal.get(namaRuangan) == null) {
+        JadwalAssignment jadwalBaru = new JadwalAssignment(matakuliah, ruangan, dosen);
+        jadwal.put(namaRuangan, jadwalBaru);
+      } else {
+        jadwal.get(namaRuangan).setJadwal(matakuliah, dosen, ruangan);
+        jadwal.get(namaRuangan).setIsSet(true);
+      }
+
+    } else {
+      // got some errors
+      System.out.print(errors);
+    }
+
+  }
+
+  private Set<String> getError(
+    String namaMatakuliah,
+    String namaRuangan,
+    String namaDosen,
+    int hari,
+    int jam) {
+      Set<String> error = new HashSet<>();
+      Map<String, JadwalAssignment> jadwal = jadwalAssignment.get(hari-1).get(jam-1);
+
+      // cek valid waktu
+      if (hari > 6 && jam > 12) {
+        error.add("invalidTime");
+      }
+      // cek namaMatakuliah
+      if (!matakuliah.containsKey(namaMatakuliah)) {
+        error.add("namaMatakuliah");
+      }
+      // cek namaRuangan
+      if (!ruangan.containsKey(namaRuangan)) {
+        error.add("namaRuangan");
+      }
+      // cek namaDosen
+      if (!dosen.containsKey(namaDosen)) {
+        error.add("namaDosen");
+      }
+      // cek apakah sudah terset
+      if (jadwal.get(namaRuangan) != null) {
+        if (jadwal.get(namaRuangan).getIsSet()) {
+          error.add("availability");
+        }
+      }
+      // cek kapasitas
+      if (ruangan.get(namaRuangan).getKapasitas() < matakuliah.get(namaMatakuliah).getKapasitas()) {
+        error.add("capacity");
+      }
+      // cek fasilitas
+      if (!ruangan.get(namaRuangan).getFasilitas().containsAll(matakuliah.get(namaMatakuliah).getFasilitas())) {
+        error.add("facility");
+      }
+      // cek dosen bentrok jadwal
+      boolean foundDosen = false;
+      for (JadwalAssignment j : jadwal.values()) {
+        if (j.getDosen().getNama() == namaDosen) {
+          foundDosen = true;
+          break;
+        }
+      }
+      if (foundDosen) {
+        error.add("dosen");
+      }
+      // cek matkul dg tingkat yg sama
+      boolean foundTingkat = false;
+      for (JadwalAssignment j : jadwal.values()) {
+        if (j.getMatakuliah().getTingkat() == matakuliah.get(namaRuangan).getTingkat()) {
+          foundTingkat = true;
+          break;
+        }
+      }
+      if (foundTingkat) {
+        error.add("tingkat");
+      }
+
+      return error;
   }
 
   // show methods
 
-  public String showJadwal() {
-    return "";
+  public void showJadwal() {
+    StringBuilder result = new StringBuilder();
+    int hari = 1;
+    for (List<Map<String, JadwalAssignment>> j : jadwalAssignment) {
+      result.append("Hari ke-" + hari + "\n");
+      int jam = 1;
+      for (Map<String, JadwalAssignment> jj : j) {
+        result.append(jam + "   ");
+        for (String namaRuangan : ruangan.keySet()) {
+          JadwalAssignment jadwal = jj.get(namaRuangan);
+          if (jadwal != null) {
+            result.append(namaRuangan + ": " + jadwal.getMatakuliah().getNama() + "; ");
+          } else {
+            result.append(namaRuangan + ": - ; ");
+          }
+        }
+        result.append("\n");
+        jam += 1;
+      }
+      hari += 1;
+    }
+    System.out.print(result);
   }
 
   public void showDosen() {
     StringBuilder result = new StringBuilder();
-    for (Dosen d : dosen) {
+    for (Dosen d : dosen.values()) {
       result.append(d.getNama() + "\n");
     }
     System.out.print(result);
@@ -45,7 +158,7 @@ public class Jadwal {
 
   public void showFasilitas() {
     StringBuilder result = new StringBuilder();
-    for (Fasilitas f : fasilitas) {
+    for (Fasilitas f : fasilitas.values()) {
       result.append(f.getNama() + "\n");
     }
     System.out.print(result);
@@ -53,69 +166,52 @@ public class Jadwal {
 
   public void showMatakuliah() {
     StringBuilder result = new StringBuilder();
-    for (Matakuliah m : matakuliah) {
-      result.append(m.getNama() + "\n");
+    for (Matakuliah m : matakuliah.values()) {
+      result.append(m.getNama() + " " + m.getKapasitas() + " " + m.getFasilitas() +"\n");
     }
     System.out.print(result);
   }
 
   public void showRuangan() {
     StringBuilder result = new StringBuilder();
-    for (Ruangan r : ruangan) {
-      result.append(r.getNama() + "\n");
+    for (Ruangan r : ruangan.values()) {
+      result.append(r.getNama() + " " + r.getKapasitas() + " " + r.getFasilitas() +"\n");
     }
     System.out.print(result);
   }
 
-
   // Set manipulations
 
   public void addDosen(String namaDosen) {
-    dosen.add(new Dosen(namaDosen));
+    dosen.put(namaDosen, new Dosen(namaDosen));
   }
 
   public void removeDosen(String namaDosen) {
-    dosen.removeIf(d -> (d.getNama() == namaDosen));
+    dosen.remove(namaDosen);
   }
 
   public void addFasilitas(String namaFasilitas) {
-    fasilitas.add(new Fasilitas(namaFasilitas));
+    fasilitas.put(namaFasilitas, new Fasilitas(namaFasilitas));
   }
 
   public void removeFasilitas(String namaFasilitas) {
-    fasilitas.removeIf(f -> (f.getNama() == namaFasilitas));
+    fasilitas.remove(namaFasilitas);
   }
 
-  public void addMatakuliah(String namaMatakuliah, int kapasitas, Set<Fasilitas> fasilitas) {
-    matakuliah.add(new Matakuliah(namaMatakuliah, kapasitas, fasilitas));
+  public void addMatakuliah(String namaMatakuliah, int kapasitas, Set<Fasilitas> fasilitas, int sks, int tingkat) {
+    matakuliah.put(namaMatakuliah, new Matakuliah(namaMatakuliah, kapasitas, fasilitas, sks, tingkat));
   }
 
   public void removeMatakuliah(String namaMatakuliah) {
-    matakuliah.removeIf(m -> (m.getNama() == namaMatakuliah));
+    matakuliah.remove(namaMatakuliah);
   }
 
   public void addRuangan(String namaRuangan, int kapasitas, Set<Fasilitas> fasilitas) {
-    ruangan.add(new Ruangan(namaRuangan, kapasitas, fasilitas));
+    ruangan.put(namaRuangan, new Ruangan(namaRuangan, kapasitas, fasilitas));
   }
 
   public void removeRuangan(String namaRuangan) {
-    ruangan.removeIf(r -> (r.getNama() == namaRuangan));
-  }
-
-  public void addJadwalAssignment(Matakuliah matakuliah, Ruangan ruangan, Dosen dosen, int hari, int jam) {
-    jadwalAssignment.add(new JadwalAssignment(matakuliah, ruangan, dosen, hari, jam));
-  }
-
-  public void removeJadwalAssignment(
-    String namaMatakuliah,
-    String namaRuangan,
-    int hari,
-    int jam) {
-    jadwalAssignment.removeIf(j -> (
-      j.getMatakuliah().getNama() == namaMatakuliah && 
-      j.getRuangan().getNama() == namaRuangan &&
-      j.getHari() == hari &&
-      j.getJam() == jam));
+    ruangan.remove(namaRuangan);
   }
 
   // Getters
@@ -124,23 +220,23 @@ public class Jadwal {
     return nama;
   }
 
-  public Set<Dosen> getDosen() {
+  public Map<String, Dosen> getDosen() {
     return dosen;
   }
 
-  public Set<Fasilitas> getFasilitas() {
+  public Map<String, Fasilitas> getFasilitas() {
     return fasilitas;
   }
 
-  public Set<Matakuliah> getMatakuliah() {
+  public Map<String, Matakuliah> getMatakuliah() {
     return matakuliah;
   }
 
-  public Set<Ruangan> getRuangan() {
+  public Map<String, Ruangan> getRuangan() {
     return ruangan;
   }
 
-  public Set<JadwalAssignment> getJadwalAssignment() {
+  public List<List<Map<String, JadwalAssignment>>> getJadwalAssignment() {
     return jadwalAssignment;
   }
 

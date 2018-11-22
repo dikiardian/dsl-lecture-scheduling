@@ -6,6 +6,8 @@ public class Matakuliah {
   private String nama;
   private int kapasitas;
   private Set<Fasilitas> fasilitas;
+  private int sks;
+  private int tingkat;
   private boolean isAssigned;
 
   public Matakuliah() {
@@ -13,10 +15,12 @@ public class Matakuliah {
     this.isAssigned = false;
   }
 
-  public Matakuliah(String nama, int kapasitas, Set<Fasilitas> fasilitas) {
+  public Matakuliah(String nama, int kapasitas, Set<Fasilitas> fasilitas, int sks, int tingkat) {
     this.nama = nama;
     this.kapasitas = kapasitas;
     this.fasilitas = fasilitas;
+    this.sks = sks;
+    this.tingkat = tingkat;
     this.isAssigned = false;
   }
 
@@ -60,4 +64,19 @@ public class Matakuliah {
     this.isAssigned = isAssigned;
   }
 
+  public int getSks() {
+    return sks;
+  }
+
+  public void setSks(int sks) {
+    this.sks = sks;
+  }
+
+  public int getTingkat() {
+    return tingkat;
+  }
+
+  public void setTingkat(int tingkat) {
+    this.tingkat = tingkat;
+  }
 }

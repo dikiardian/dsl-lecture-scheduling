@@ -12,6 +12,11 @@ public class Fasilitas {
     this.nama = nama;
   }
 
+  @Override
+  public String toString() {
+    return nama;
+  }
+
   public String getNama() {
     return nama;
   }
