@@ -17,12 +17,66 @@ public class CustomParser {
     }
 
     public static void parseAssign(ScheduleParser.AssignContext ctx) {
-        //TODO: Silahkan diparse
-        //Example: ctx.Kind().getText() or ctx.Name(0).getText() or ctx.Name(1).getText()
+        String assignmentOperator = ctx.AssignmentOperator().getText();
+        if (assignmentOperator.equals("ASSIGN")) {
+            //TODO: Cek input length
+            String namaMatakuliah = ctx.Name().getText().replace("\"", "");
+            String namaRuangan = ctx.Class().getText().replace("\"", "");
+            String namaDosen = ctx.Dosen().getText().replace("\"", "");
+            int hari;
+            try {
+                hari = Integer.parseInt(ctx.Day().getText());
+                if (hari < 0 || hari > 5) {
+                    jadwal.printPrompt("error", "Pastikan atribut hari bernilai angka 1-5");
+                    return;
+                }
+            } catch (Exception e) {
+                jadwal.printPrompt("error", "Pastikan atribut hari bernilai angka");
+                return;
+            }
+
+            int jam;
+            try {
+                jam = Integer.parseInt(ctx.Time().getText());
+                if (jam < 0 || jam > 11) {
+                    jadwal.printPrompt("error", "Pastikan atribut jam bernilai angka 1-11");
+                    return;
+                }
+            } catch (Exception e) {
+                jadwal.printPrompt("error", "Pastikan atribut jam bernilai angka");
+                return;
+            }
+
+            int durasi;
+            try {
+                durasi = Integer.parseInt(ctx.Duration().getText());
+                if (durasi < 0) {
+                    jadwal.printPrompt("error", "Pastikan atribut durasi bernilai positif");
+                    return;
+                }
+            } catch (Exception e) {
+                jadwal.printPrompt("error", "Pastikan atribut durasi bernilai angka");
+                return;
+            }
+
+            jadwal.assignTo(namaMatakuliah, namaRuangan, namaDosen, hari, jam, durasi);
+            
+        } else if (assignmentOperator.equals("REMOVE")) {
+            //TODO: Cek input length
+            
+        }
     }
 
     public static void parseEnd(ScheduleParser.EndContext ctx) {
-        //TODO: Program Exit
+        String otherOperator = ctx.OtherOperator().getText();
+        if (otherOperator.equals("HELP")) {
+            //TODO: Cek input length
+            System.out.println();
+            
+        } else if (otherOperator.equals("EXIT")) {
+            //TODO: Cek input length
+            System.exit(0);
+        }
     }
 
     public static void parseDosen(ScheduleParser.ModelContext ctx) {

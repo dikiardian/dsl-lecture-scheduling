@@ -1,22 +1,24 @@
 ADD FASILITAS "TV"
-ADD FASILITAS "AC"
 ADD FASILITAS "Monitor"
-ADD FASILITAS "Meja"
-ADD FASILITAS "Kursi"
 ADD FASILITAS "Papan Tulis"
-UPDATE FASILITAS "Papan Tulis" (nama: "Papan Tulis Putih")
+ADD FASILITAS "Kolam Renang"
 SHOW FASILITAS
-ADD RUANGAN "9090" (kapasitas: 90, fasilitas: [ "AC", "Papan Tulis", "Monitor" ])
+
+ADD DOSEN "John1"
+ADD DOSEN "John2"
+ADD DOSEN "John3"
+ADD DOSEN "John4"
+ADD DOSEN "John5"
+SHOW DOSEN
+
+ADD RUANGAN "7774" (kapasitas: 100, fasilitas: ["TV", "Monitor"])
+ADD RUANGAN "7771" (kapasitas: 80, fasilitas: ["Papan Tulis", "TV"])
+ADD RUANGAN "7772" (kapasitas: 60, fasilitas: ["Monitor"])
+ADD RUANGAN "7773" (kapasitas: 10, fasilitas: ["Kolam Renang", "Monitor"])
 SHOW RUANGAN
 
+ADD MATAKULIAH "RPL1" (kapasitas: 35, fasilitas: ["TV", "Monitor"])
+SHOW MATAKULIAH
 
 
-
-ADD DOSEN "Diki Ardian"
-ADD DOSEN "Fajar Nug"
-ADD DOSEN "Ferdi Go"
-SHOW DOSEN
-DELETE DOSEN "Diki Ardian"
-UPDATE DOSEN "Ferdi Go" (nama : "Ferdi Goz")
-SHOW DOSEN
 

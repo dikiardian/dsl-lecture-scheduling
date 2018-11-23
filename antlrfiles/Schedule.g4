@@ -1,11 +1,11 @@
 grammar Schedule;
 model: BasicOperator Kind (Name)? ('(' ('nama'':'Name)? ('kapasitas'':'Capacity)? (',''fasilitas'':'Facility)? (',''sks'':'Sks)? (',''tingkat'':'Tingkat)?')')*;
-assign: AssignmentOperator (Name)? ('(' 'kelas'':' Class',''dosen'':'Dosen',''hari'':'Day',''jam'':'Time')');
+assign: AssignmentOperator (Name)? ('(' 'ruang'':' Class',''dosen'':'Dosen',''hari'':'Day',''jam'':'Time',''durasi'':'Duration')');
 end: OtherOperator;
 
 BasicOperator: ('ADD') | ('DELETE') | ('UPDATE') | ('SHOW');
-AssignmentOperator: ('ASSIGN');
-OtherOperator: ('EXIT');
+AssignmentOperator: ('ASSIGN') | ('REMOVE');
+OtherOperator: ('EXIT') | ('HELP');
 Kind: ('DOSEN') | ('RUANGAN') | ('FASILITAS') | ('MATAKULIAH') | ('JADWAL');
 Name: '"' ( ~('"') )+ '"';
 Class: '"' ( ~('"') )+ '"';
@@ -16,4 +16,5 @@ Sks: [0-9]+;
 Tingkat: [0-9]+;
 Day: [0-9]+;
 Time: [0-9]+;
+Duration: [0-9]+;
 WhiteSpace: [ \t\r\n]+ -> skip;

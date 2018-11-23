@@ -7,6 +7,10 @@ import model.*;
 import utils.*;
 
 class Main {
+    public static final ArrayList<String> basicOperators = new ArrayList<>(Arrays.asList("ADD", "DELETE", "UPDATE", "SHOW"));
+    public static final ArrayList<String> assignOperators = new ArrayList<>(Arrays.asList("ASSIGN", "REMOVE"));
+    public static final ArrayList<String> endOperators = new ArrayList<>(Arrays.asList("EXIT", "HELP"));
+
     public static void main(String[] args) throws IOException {
         Scanner scanner = new Scanner(System.in);
         CustomParser.jadwal = new Jadwal("Jadwalku");
@@ -18,9 +22,15 @@ class Main {
             CommonTokenStream tokens = new CommonTokenStream(lexer);
             ScheduleParser parser = new ScheduleParser(tokens); 
             parser.addParseListener(new ScheduleBaseListener());
-            parser.model();
-            // parser.assign();
-            // parser.end();
+            
+            String operator = query.split(" ")[0];
+            if (basicOperators.contains(operator)) {
+                parser.model();
+            } else if (assignOperators.contains(operator)) {
+                parser.assign();
+            } else if (endOperators.contains(operator)) {
+                parser.end();
+            }
         }
     }
 }
