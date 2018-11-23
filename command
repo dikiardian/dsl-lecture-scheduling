@@ -1,1 +1,1 @@
-ADD RUANGAN "9090" (kapasitas: 90, fasilitas: ["AC","Kipas"])
+ADD RUANGAN "9090" (kapasitas: 90, fasilitas: [ "AC", "Kipas" ])
