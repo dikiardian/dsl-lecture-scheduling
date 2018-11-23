@@ -28,7 +28,7 @@ public class CustomParser {
         String basicOperator = ctx.BasicOperator().getText();
         if (basicOperator.equals("ADD")) {
             //TODO: Cek input length
-            String name = ctx.Name(0).getText().substring(3);
+            String name = ctx.Name(0).getText().replace("\"", "");
             jadwal.addDosen(name);
 
         } else if (basicOperator.equals("DELETE")) {
@@ -52,20 +52,20 @@ public class CustomParser {
         String basicOperator = ctx.BasicOperator().getText();
         if (basicOperator.equals("ADD")) {
             //TODO: Cek input length
-            String name = ctx.Name(0).getText().substring(3);
-            String capacity = ctx.Capacity(0).getText().substring(3);
-            boolean stop = false;
-            int idx = 0;
+            // String name = ctx.Name(0).getText();
+            // String capacity = ctx.Capacity(0).getText();
+            // String facility = ctx.Facility(0).getText();
+            // System.out.println(name + " " + capacity + " " + facility);
+            String name = ctx.Name(0).getText().replace("\"", "");
+            String capacity = ctx.Capacity(0).getText();
+            String facility = ctx.Facility(0).getText().replace("[", "").replace("]", "");
+            List<String> facilityAsList = new ArrayList<String>(Arrays.asList(facility.split(",")));
             Set<Fasilitas> facilities = new HashSet<>();
-            while (!stop) {
-                if (ctx.Facility(idx) != null) {
-                    String facility = ctx.Facility(idx).getText().substring(3);
-                    facilities.add(new Fasilitas(facility));
-                    idx += 1;
-                } else {
-                    stop = true;
-                }
+
+            for (String f : facilityAsList) {
+                facilities.add(new Fasilitas(f.replace("\"", "").trim()));
             }
+
             jadwal.addRuangan(name, Integer.parseInt(capacity), facilities);
 
         } else if (basicOperator.equals("DELETE")) {
