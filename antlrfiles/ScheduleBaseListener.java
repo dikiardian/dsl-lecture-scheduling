@@ -4,7 +4,7 @@ package antlrfiles;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
-import utils.*;
+import utils.CustomParser;
 /**
  * This class provides an empty implementation of {@link ScheduleListener},
  * which can be extended to create a listener which only needs to handle a subset
