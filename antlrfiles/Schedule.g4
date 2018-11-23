@@ -1,12 +1,12 @@
 grammar Schedule;
-model: BasicOperator Kind (Name)* ('('('kapasitas'':'Capacity)* (',''fasilitas'':'Facility)* (',''sks'':'Sks)* (',''tingkat'':'Tingkat)*')')*;
-assign: AssignmentOperator (Name)+ ('(' 'kelas'':' Class',''dosen'':'Dosen',''hari'':'Day',''jam'':'Time')');
+model: BasicOperator Kind (Name)? ('(' ('nama'':'Name)? ('kapasitas'':'Capacity)? (',''fasilitas'':'Facility)? (',''sks'':'Sks)? (',''tingkat'':'Tingkat)?')')*;
+assign: AssignmentOperator (Name)? ('(' 'kelas'':' Class',''dosen'':'Dosen',''hari'':'Day',''jam'':'Time')');
 end: OtherOperator;
 
 BasicOperator: ('ADD') | ('DELETE') | ('UPDATE') | ('SHOW');
 AssignmentOperator: ('ASSIGN');
 OtherOperator: ('EXIT');
-Kind: ('DOSEN') | ('RUANGAN') | ('FASILITAS') | ('MATAKULIAH');
+Kind: ('DOSEN') | ('RUANGAN') | ('FASILITAS') | ('MATAKULIAH') | ('JADWAL');
 Name: '"' ( ~('"') )+ '"';
 Class: '"' ( ~('"') )+ '"';
 Dosen: '"' ( ~('"') )+ '"';

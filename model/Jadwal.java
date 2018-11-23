@@ -54,7 +54,7 @@ public class Jadwal {
         }
         matakuliah.setAllocated(matakuliah.getAllocated()+1);
       }
-      System.out.println("Berhasil!");
+      printPrompt("success", "Penjadwalan matakuliah " + namaMatakuliah + "pada ruang " + namaRuangan + " berhasil!");
     } else {
       // got some errors
       System.out.println(errors);
@@ -148,6 +148,14 @@ public class Jadwal {
       }
 
       return error;
+  }
+
+  public void printPrompt(String mode, String msg) {
+    if (mode == "error") {
+      System.out.println("[ERROR] " + msg);
+    } else {
+      System.out.println("[SUCCESS] " + msg);
+    }
   }
 
   // show methods
@@ -280,28 +288,80 @@ public class Jadwal {
 
   public void addDosen(String namaDosen) {
     dosen.put(namaDosen, new Dosen(namaDosen));
+    printPrompt("success", "Dosen " + namaDosen + " berhasil ditambahkan.");
   }
 
-  public void updateDosen(String namaDosen, String newNamaDosen) {
-    //TODO: cek lagi
-  }
-
-  public void removeDosen(String namaDosen) {
-    //TODO: cek lagi
-    dosen.remove(namaDosen);
+  public void updateDosen(String mode, String namaDosen, String newNamaDosen) {
+    // cek reference
+    boolean foundDosen = false;
+    for (List<Map<String, JadwalAssignment>> j : jadwalAssignment) {
+      for (Map<String, JadwalAssignment> jj : j) {
+        for (JadwalAssignment jjj : jj.values()) {
+          if (jjj.getDosen().getNama() == namaDosen) {
+            foundDosen = true;
+            break;
+          }
+        }
+        if (foundDosen) break;
+      }
+      if (foundDosen) break;
+    }
+    if (foundDosen) {
+      printPrompt("error", "Dosen "+ namaDosen + " sudah terjadwal. \nHapus dari jadwal terlebih dahulu untuk update/delete.");
+    } else {
+      if (mode == "update") {
+        dosen.remove(namaDosen);
+        dosen.put(newNamaDosen, new Dosen(newNamaDosen));
+        printPrompt("success", "Dosen " + namaDosen + " berhasil diperbarui.");
+      } else {
+        // mode delete
+        dosen.remove(namaDosen);
+        printPrompt("success", "Dosen " + namaDosen + " berhasil dihapus.");
+      }
+    }
   }
 
   public void addFasilitas(String namaFasilitas) {
     fasilitas.put(namaFasilitas, new Fasilitas(namaFasilitas));
+    printPrompt("success", "Fasilitas " + namaFasilitas + " berhasil ditambahkan.");
   }
 
-  public void updateFasilitas(String namaFasilitas, String newNamaFasilitas) {
-    //TODO: cek lagi
-  }
-
-  public void removeFasilitas(String namaFasilitas) {
-    //TODO: cek lagi
-    fasilitas.remove(namaFasilitas);
+  public void updateFasilitas(String mode, String namaFasilitas, String newNamaFasilitas) {
+    // cek reference
+    boolean foundFasilitas = false;
+    for (Ruangan r : ruangan.values()) {
+      for (Fasilitas f : r.getFasilitas()) {
+        if (f.getNama() == namaFasilitas) {
+          foundFasilitas = true;
+          break;
+        }
+      }
+      if (foundFasilitas) break;
+    }
+    if (!foundFasilitas) {
+      for (Matakuliah m : matakuliah.values()) {
+        for (Fasilitas f : m.getFasilitas()) {
+          if (f.getNama() == namaFasilitas) {
+            foundFasilitas = true;
+            break;
+          }
+        }
+        if (foundFasilitas) break;
+      }
+    }
+    if (foundFasilitas) {
+      printPrompt("error", "Fasilitas "+ namaFasilitas + " telah terdaftar pada matakuliah/ruangan tertentu.\nHapus dari matakuliah/ruangan terlebih dahulu untuk update/delete.");
+    } else {
+      if (mode == "update") {
+        fasilitas.remove(namaFasilitas);
+        fasilitas.put(newNamaFasilitas, new Fasilitas(newNamaFasilitas));
+        printPrompt("success", "Fasilitas " + namaFasilitas + " berhasil diperbarui.");
+      } else {
+        // mode delete
+        fasilitas.remove(namaFasilitas);
+        printPrompt("delete", "Fasilitas " + namaFasilitas + " berhasil dihapus.");
+      }
+    }
   }
 
   public void addMatakuliah(String namaMatakuliah, int kapasitas, Set<Fasilitas> fasilitas, int sks, int tingkat) {
@@ -315,20 +375,80 @@ public class Jadwal {
     }
     if (fasilitasJadwal.containsAll(fasilitasMatakuliah)) {
       matakuliah.put(namaMatakuliah, new Matakuliah(namaMatakuliah, kapasitas, fasilitas, sks, tingkat));
+      printPrompt("success", "Matakuliah " + namaMatakuliah + " berhasil ditambahkan.");
     } else {
       Set<String> diff = new HashSet<>(fasilitasMatakuliah);
       diff.removeAll(fasilitasJadwal);
-      System.out.println("[ERROR] Fasilitas "+ diff + " belum ditambahkan.");
+      printPrompt("error", "Matakuliah " + namaMatakuliah + "gagal ditambahkan karena fasilitas "+ diff + " belum ditambahkan.");
     }
   }
 
-  public void updateMatakuliah(String namaMatakuliah, int kapasitas, Set<Fasilitas> fasilitas, int sks, int tingkat) {
-    //TODO: cek lagi
-  }
-
-  public void removeMatakuliah(String namaMatakuliah) {
-    //TODO: cek lagi
-    matakuliah.remove(namaMatakuliah);
+  public void updateMatakuliah(
+    String mode,
+    String namaMatakuliah,
+    String newNamaMatakuliah,
+    int newKapasitas,
+    Set<Fasilitas> newFasilitas,
+    int newSks,
+    int newTingkat) {
+    // cek reference
+    boolean foundMatakuliah = false;
+    for (List<Map<String, JadwalAssignment>> j : jadwalAssignment) {
+      for (Map<String, JadwalAssignment> jj : j) {
+        for (JadwalAssignment jjj : jj.values()) {
+          if (jjj.getMatakuliah().getNama() == namaMatakuliah) {
+            foundMatakuliah = true;
+            break;
+          }
+        }
+        if (foundMatakuliah) break;
+      }
+      if (foundMatakuliah) break;
+    }
+    if (foundMatakuliah) {
+      printPrompt("error", "Matakuliah "+ namaMatakuliah + " sudah terjadwal. \nHapus dari jadwal terlebih dahulu untuk update/delete.");
+    } else {
+      if (mode == "update") {
+        if (newNamaMatakuliah != null) {
+          int usedKapasitas;
+          Set<Fasilitas> usedFasilitas;
+          int usedSks;
+          int usedTingkat;
+          if (newKapasitas == -1) {
+            usedKapasitas = matakuliah.get(namaMatakuliah).getKapasitas();
+          } else {
+            usedKapasitas = newKapasitas;
+          }
+          if (newFasilitas != null) {
+            usedFasilitas = matakuliah.get(namaMatakuliah).getFasilitas();
+          } else {
+            usedFasilitas = newFasilitas;
+          }
+          if (newSks != -1) {
+            usedSks = matakuliah.get(namaMatakuliah).getSks();
+          } else {
+            usedSks = newSks;
+          }
+          if (newTingkat != -1) {
+            usedTingkat = matakuliah.get(namaMatakuliah).getTingkat();
+          } else {
+            usedTingkat = newTingkat;
+          }
+          matakuliah.remove(namaMatakuliah);
+          matakuliah.put(newNamaMatakuliah, new Matakuliah(newNamaMatakuliah, usedKapasitas, usedFasilitas, usedSks, usedTingkat));
+        } else {
+          if (newKapasitas != -1) matakuliah.get(namaMatakuliah).setKapasitas(newKapasitas);
+          if (newFasilitas != null) matakuliah.get(namaMatakuliah).setFasilitas(newFasilitas);
+          if (newSks != -1) matakuliah.get(namaMatakuliah).setSks(newSks);
+          if (newTingkat != -1) matakuliah.get(namaMatakuliah).setTingkat(newTingkat);
+        }
+        printPrompt("success", "Matakuliah " + namaMatakuliah + " berhasil diperbarui.");
+      } else {
+        // mode delete
+        matakuliah.remove(namaMatakuliah);
+        printPrompt("success", "Matakuliah " + namaMatakuliah + " berhasil dihapus.");
+      }
+    }
   }
 
   public void addRuangan(String namaRuangan, int kapasitas, Set<Fasilitas> fasilitas) {
@@ -342,20 +462,64 @@ public class Jadwal {
     }
     if (fasilitasJadwal.containsAll(fasilitasRuangan)) {
       ruangan.put(namaRuangan, new Ruangan(namaRuangan, kapasitas, fasilitas));
+      printPrompt("success", "Ruangan " + namaRuangan + " berhasil ditambahkan.");
     } else {
       Set<String> diff = new HashSet<>(fasilitasRuangan);
       diff.removeAll(fasilitasJadwal);
-      System.out.println("[ERROR] Fasilitas "+ diff + " belum ditambahkan.");
+      printPrompt("error", "Ruangan " + namaRuangan + "gagal ditambahkan karena fasilitas "+ diff + " belum ditambahkan.");
     }
   }
 
-  public void updateRuangan(String namaRuangan, int kapasitas, Set<Fasilitas> fasilitas) {
-    //TODO: cek lagi
-  }
-
-  public void removeRuangan(String namaRuangan) {
-    //TODO: cek lagi
-    ruangan.remove(namaRuangan);
+  public void updateRuangan(
+    String mode,
+    String namaRuangan,
+    String newNamaRuangan,
+    int newKapasitas,
+    Set<Fasilitas> newFasilitas) {
+    // cek reference
+    boolean foundRuangan = false;
+    for (List<Map<String, JadwalAssignment>> j : jadwalAssignment) {
+      for (Map<String, JadwalAssignment> jj : j) {
+        for (JadwalAssignment jjj : jj.values()) {
+          if (jjj.getRuangan().getNama() == namaRuangan) {
+            foundRuangan = true;
+            break;
+          }
+        }
+        if (foundRuangan) break;
+      }
+      if (foundRuangan) break;
+    }
+    if (foundRuangan) {
+      printPrompt("error", "Ruangan "+ namaRuangan + " sudah terjadwal. \nHapus dari jadwal terlebih dahulu untuk update/delete.");
+    } else {
+      if (mode == "update") {
+        if (newNamaRuangan != null) {
+          int usedKapasitas;
+          Set<Fasilitas> usedFasilitas;
+          if (newKapasitas == -1) {
+            usedKapasitas = ruangan.get(namaRuangan).getKapasitas();
+          } else {
+            usedKapasitas = newKapasitas;
+          }
+          if (newFasilitas != null) {
+            usedFasilitas = ruangan.get(namaRuangan).getFasilitas();
+          } else {
+            usedFasilitas = newFasilitas;
+          }
+          ruangan.remove(namaRuangan);
+          ruangan.put(newNamaRuangan, new Ruangan(newNamaRuangan, usedKapasitas, usedFasilitas));
+        } else {
+          if (newKapasitas != -1) ruangan.get(namaRuangan).setKapasitas(newKapasitas);
+          if (newFasilitas != null) ruangan.get(namaRuangan).setFasilitas(newFasilitas);
+        }
+        printPrompt("success", "Ruangan " + namaRuangan + " berhasil diperbarui.");
+      } else {
+        // mode delete
+        ruangan.remove(namaRuangan);
+        printPrompt("success", "Ruangan " + namaRuangan + " berhasil dihapus.");
+      }
+    }
   }
 
   // Getters
