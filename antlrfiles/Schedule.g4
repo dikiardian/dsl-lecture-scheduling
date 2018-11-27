@@ -1,20 +1,13 @@
 grammar Schedule;
-model: BasicOperator Kind (Name)? ('(' ('nama'':'Name)? ('kapasitas'':'Capacity)? (',''fasilitas'':'Facility)? (',''sks'':'Sks)? (',''tingkat'':'Tingkat)?')')*;
-assign: AssignmentOperator (Name)? ('(' 'ruang'':' Class',''dosen'':'Dosen',''hari'':'Day',''jam'':'Time',''durasi'':'Duration')');
+model: BasicOperator Kind (String)? ('(' ('nama'':'String)? (',')? ('kapasitas'':'Integer)? (',')? ('fasilitas'':'ArrayOfString)? (',')? ('sks'':'Integer)? (',')? ('tingkat'':'Integer)?')')*;
+assign: AssignmentOperator (String)? ('(' 'ruang'':' String',''dosen'':'String',''hari'':'Integer',''jam'':'Integer',''durasi'':'Integer')');
 end: OtherOperator;
 
 BasicOperator: ('ADD') | ('DELETE') | ('UPDATE') | ('SHOW');
 AssignmentOperator: ('ASSIGN') | ('REMOVE');
 OtherOperator: ('EXIT') | ('HELP');
 Kind: ('DOSEN') | ('RUANGAN') | ('FASILITAS') | ('MATAKULIAH') | ('JADWAL');
-Name: '"' ( ~('"') )+ '"';
-Class: '"' ( ~('"') )+ '"';
-Dosen: '"' ( ~('"') )+ '"';
-Capacity: [0-9]+;
-Facility: '[' WhiteSpace* ('"' ( ~('"') )+ '"')+(WhiteSpace* ',' WhiteSpace* ('"' ( ~('"') )+ '"')+)* WhiteSpace* ']';
-Sks: [0-9]+;
-Tingkat: [0-9]+;
-Day: [0-9]+;
-Time: [0-9]+;
-Duration: [0-9]+;
+String: '"' ( ~('"') )+ '"';
+Integer: [0-9]+;
+ArrayOfString: '[' WhiteSpace* ('"' ( ~('"') )+ '"')+(WhiteSpace* ',' WhiteSpace* ('"' ( ~('"') )+ '"')+)* WhiteSpace* ']';
 WhiteSpace: [ \t\r\n]+ -> skip;

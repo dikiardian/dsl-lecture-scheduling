@@ -14,7 +14,10 @@ class Main {
     public static void main(String[] args) throws IOException {
         Scanner scanner = new Scanner(System.in);
         CustomParser.jadwal = new Jadwal("Jadwalku");
+        System.out.println("Masukkan \"HELP\" untuk bantuan command");
+
         while(true) {
+            // System.out.print("> ");
             String query = scanner.nextLine();
             InputStream stream = new ByteArrayInputStream(query.getBytes(StandardCharsets.UTF_8));
             CharStream cs = new ANTLRInputStream(stream);

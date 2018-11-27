@@ -54,10 +54,42 @@ public class Jadwal {
         }
         matakuliah.setAllocated(matakuliah.getAllocated()+1);
       }
-      printPrompt("success", "Penjadwalan matakuliah " + namaMatakuliah + "pada ruang " + namaRuangan + " berhasil!");
+      printPrompt("success", "Penjadwalan matakuliah " + namaMatakuliah + " pada ruang " + namaRuangan + " berhasil!");
     } else {
       // got some errors
       System.out.println(errors);
+      for (String e: errors) {
+        if (e == "invalidTime") {
+          printPrompt("error", "Input waktu salah, seharusnya hari <= 5 dan jam <= 11.");
+        }
+        if (e == "namaMatakuliah") {
+          printPrompt("error", "Matakuliah belum ditambahkan.");
+        }
+        if (e == "namaRuangan") {
+          printPrompt("error", "Ruangan belum ditambahkan.");
+        }
+        if (e == "namaDosen") {
+          printPrompt("error", "Dosen belum ditambahkan.");
+        }
+        if (e == "allocated") {
+          printPrompt("error", "Sisa alokasi jam matakuliah kurang dari durasi assignment.");
+        }
+        if (e == "availability") {
+          printPrompt("error", "Ketersediaan waktu penjadwalan kurang dari durasi assignment.");
+        }
+        if (e == "capacity") {
+          printPrompt("error", "Kapasitas ruangan tidak mencukupi.");
+        }
+        if (e == "facility") {
+          printPrompt("error", "Fasilitas ruangan tidak mendukung.");
+        }
+        if (e == "dosen") {
+          printPrompt("error", "Dosen memiliki jadwal yang sama di lain ruangan.");
+        }
+        if (e == "tingkat") {
+          printPrompt("error", "Terdapat matakuliah dengan tingkat yang sama pada jadwal yang sama.");
+        }
+      }
     }
   }
 
@@ -65,6 +97,7 @@ public class Jadwal {
     for (int d=0; d<durasi; d++) {
       jadwalAssignment.get(hari-1).get(jam-1+d).remove(namaRuangan);
     }
+    printPrompt("success", "Jadwal berhasil dihapus.");
   }
 
   private Set<String> getError(
@@ -121,7 +154,15 @@ public class Jadwal {
         error.add("capacity");
       }
       // cek fasilitas
-      if (!ruangan.get(namaRuangan).getFasilitas().containsAll(matakuliah.get(namaMatakuliah).getFasilitas())) {
+      Set<String> fasilitasRuangan = new HashSet<>();
+      for (Fasilitas f: ruangan.get(namaRuangan).getFasilitas()) {
+        fasilitasRuangan.add(f.getNama());
+      }
+      Set<String> fasilitasMatakuliah = new HashSet<>();
+      for (Fasilitas f: matakuliah.get(namaMatakuliah).getFasilitas()) {
+        fasilitasMatakuliah.add(f.getNama());
+      }
+      if (!fasilitasRuangan.containsAll(fasilitasMatakuliah)) {
         error.add("facility");
       }
       // cek dosen bentrok jadwal
@@ -379,7 +420,7 @@ public class Jadwal {
     } else {
       Set<String> diff = new HashSet<>(fasilitasMatakuliah);
       diff.removeAll(fasilitasJadwal);
-      printPrompt("error", "Matakuliah " + namaMatakuliah + "gagal ditambahkan karena fasilitas "+ diff + " belum ditambahkan.");
+      printPrompt("error", "Matakuliah " + namaMatakuliah + " gagal ditambahkan karena fasilitas "+ diff + " belum ditambahkan.");
     }
   }
 
@@ -466,7 +507,7 @@ public class Jadwal {
     } else {
       Set<String> diff = new HashSet<>(fasilitasRuangan);
       diff.removeAll(fasilitasJadwal);
-      printPrompt("error", "Ruangan " + namaRuangan + "gagal ditambahkan karena fasilitas "+ diff + " belum ditambahkan.");
+      printPrompt("error", "Ruangan " + namaRuangan + " gagal ditambahkan karena fasilitas "+ diff + " belum ditambahkan.");
     }
   }
 
