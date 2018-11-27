@@ -109,7 +109,7 @@ public class CustomParser {
         String otherOperator = ctx.OtherOperator().getText();
         if (otherOperator.equals("HELP")) {
             //TODO: Cek input length
-            System.out.println();
+            System.out.println("#Menambah Objek\nADD DOSEN \"<nama>\"\nADD FASILITAS \"<nama>\"\nADD RUANGAN \"<nama>\" (kapasitas:<kapasitas>, fasilitas:[<fasilitas>])\nADD MATAKULIAH \"<nama>\" (kapasitas:<kapasitas>, fasilitas:[<fasilitas>], sks:<sks>, tingkat:<tingkat>)\n\n#Menghapus Objek\nDELETE DOSEN \"<nama>\"\nDELETE FASILITAS \"<nama>\"\nDELETE RUANGAN \"<nama>\"\nDELETE MATAKULIAH \"<nama>\"\n\n#Memperbarui Objek\nUPDATE DOSEN \"<nama>\" (nama:\"<nama-baru>\")\nUPDATE FASILITAS \"<nama>\" (nama:\"<nama-baru>\")\nUPDATE RUANGAN \"<nama>\" (nama:\"<nama-baru>\", kapasitas:<kapasitas-baru>, fasilitas:[<fasilitas-baru>])\nUPDATE MATAKULIAH \"<nama>\" (nama:\"<nama-baru>\", kapasitas:<kapasitas-baru>, fasilitas:[<fasilitas-baru>], sks:<sks-baru>, tingkat:<tingkat-baru>)\n\n#Menampilkan Objek\nSHOW DOSEN\nSHOW FASILITAS\nSHOW RUANGAN\nSHOW MATAKULIAH\nSHOW JADWAL\n\n#Melakukan Penjadwalan\nASSIGN “<nama-matakuliah>\" (ruang:\"<nama-ruangan>\", dosen:\"<nama-dosen>\", hari:<hari-dalam-angka{1-5}>, jam:<jam{1-11}>, durasi:<durasi>)\nREMOVE \"<nama-ruangan>\" (hari:<hari-dalam-angka{1-5}>, jam:<jam{1-11}>, durasi:<durasi>)\n\n#Operasi Lain\nHELP\nEXIT\n");
             
         } else if (otherOperator.equals("EXIT")) {
             //TODO: Cek input length
